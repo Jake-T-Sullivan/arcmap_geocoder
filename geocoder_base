@@ -21,7 +21,7 @@ def geocode(address):
     file = open(json_dir, 'wb') 
     file.write(json_cord.content) 
     file.close() 
-    with open(r"C:\Users\Jacob\Desktop\Learning\GIS\Google_API_Tool\attempt.json") as json_file:
+    with open(json_dir) as json_file:
         data = json.load(json_file)
         for p in data["results"]:
             x_coord = p["geometry"]["location"]["lat"]
