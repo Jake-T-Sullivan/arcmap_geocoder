@@ -1,0 +1,30 @@
+import requests 
+import json  
+
+api_key = 
+
+url = "https://maps.googleapis.com/maps/api/geocode/json?address="
+
+#directory and name of json file to be created
+json_dir = 
+
+def panToExtent(lat,lon):
+    mxd = arcpy.mapping.MapDocument('CURRENT')
+    dataFrame = arcpy.mapping.ListDataFrames(mxd)[0]
+
+    extent = arcpy.Extent(lon, lat, lon, lat)
+    dataFrame.panToExtent(extent)
+    arcpy.RefreshActiveView()
+
+def geocode(address):
+    json_cord = requests.get(url + address +"&key="+ api_key) #api call
+    file = open(json_dir, 'wb') 
+    file.write(json_cord.content) 
+    file.close() 
+    with open(r"C:\Users\Jacob\Desktop\Learning\GIS\Google_API_Tool\attempt.json") as json_file:
+        data = json.load(json_file)
+        for p in data["results"]:
+            x_coord = p["geometry"]["location"]["lat"]
+            y_coord = p["geometry"]["location"]["lng"]
+
+    panToExtent(x_coord, y_coord)#wgs84
