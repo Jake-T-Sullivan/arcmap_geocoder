@@ -11,10 +11,18 @@ json_dir =
 def panToExtent(lat,lon):
     mxd = arcpy.mapping.MapDocument('CURRENT')
     dataFrame = arcpy.mapping.ListDataFrames(mxd)[0]
-
+    
+    #api only returns coords in wgs84. dataframe spatial reference must be temporarily changed to pan to location
+    
+    original_sr = dataFrame.spatialReference
+    wgs84_sr = arcpy.SpatialReference(4326)
+    dataFrame.spatialReference = wgs84_sr
+    
     extent = arcpy.Extent(lon, lat, lon, lat)
     dataFrame.panToExtent(extent)
     arcpy.RefreshActiveView()
+    dataFrame.spatialReference = original_sr
+    
 
 def geocode(address):
     json_cord = requests.get(url + address +"&key="+ api_key) #api call
