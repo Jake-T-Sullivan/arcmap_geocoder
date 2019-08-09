@@ -8,7 +8,7 @@ url = "https://maps.googleapis.com/maps/api/geocode/json?address="
 #directory and name of json file to be created
 json_dir = 
 
-def panToExtent(lat,lon):
+def panToExtent(lon,lat):
     mxd = arcpy.mapping.MapDocument('CURRENT')
     dataFrame = arcpy.mapping.ListDataFrames(mxd)[0]
     
@@ -18,7 +18,7 @@ def panToExtent(lat,lon):
     wgs84_sr = arcpy.SpatialReference(4326)
     dataFrame.spatialReference = wgs84_sr
     
-    extent = arcpy.Extent(lon, lat, lon, lat)
+    extent = arcpy.Extent(lat, lon, lat, lon)
     dataFrame.panToExtent(extent)
     arcpy.RefreshActiveView()
     dataFrame.spatialReference = original_sr
