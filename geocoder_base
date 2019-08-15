@@ -1,12 +1,9 @@
 import requests 
 import json  
 
-api_key = 
+api_key = #google geocodeapi here
 
 url = "https://maps.googleapis.com/maps/api/geocode/json?address="
-
-#directory and name of json file to be created
-json_dir = 
 
 def panToExtent(lon,lat):
     mxd = arcpy.mapping.MapDocument('CURRENT')
@@ -26,13 +23,11 @@ def panToExtent(lon,lat):
 
 def geocode(address):
     json_cord = requests.get(url + address +"&key="+ api_key) #api call
-    file = open(json_dir, 'wb') 
-    file.write(json_cord.content) 
-    file.close() 
-    with open(json_dir) as json_file:
-        data = json.load(json_file)
-        for p in data["results"]:
-            x_coord = p["geometry"]["location"]["lat"]
-            y_coord = p["geometry"]["location"]["lng"]
+    json_data = json_cord.content
+    json_file = json.loads(json_data)
+    
+    for p in json_file["results"]:
+        x_coord = p["geometry"]["location"]["lat"]
+        y_coord = p["geometry"]["location"]["lng"]
 
     panToExtent(x_coord, y_coord)#wgs84
