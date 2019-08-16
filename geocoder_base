@@ -5,7 +5,7 @@ api_key = #google geocodeapi here
 
 url = "https://maps.googleapis.com/maps/api/geocode/json?address="
 
-def panToExtent(lon,lat):
+def ZoomToExtent(ne_x, ne_y, sw_x, sw_y):
     mxd = arcpy.mapping.MapDocument('CURRENT')
     dataFrame = arcpy.mapping.ListDataFrames(mxd)[0]
     
@@ -15,8 +15,8 @@ def panToExtent(lon,lat):
     wgs84_sr = arcpy.SpatialReference(4326)
     dataFrame.spatialReference = wgs84_sr
     
-    extent = arcpy.Extent(lat, lon, lat, lon)
-    dataFrame.panToExtent(extent)
+    extent = arcpy.Extent(ne_y,sw_x,sw_y,ne_x)
+    dataFrame.extent = extent
     arcpy.RefreshActiveView()
     dataFrame.spatialReference = original_sr
     
@@ -26,7 +26,16 @@ def geocode(address):
     json_file = json.loads(json_cord.content)
     
     for p in json_file["results"]:
-        x_coord = p["geometry"]["location"]["lat"]
-        y_coord = p["geometry"]["location"]["lng"]
+        try:
+            print(p["geometry"])
+            ne_x = p["geometry"]["bounds"]["northeast"]["lat"]
+            ne_y = p["geometry"]["bounds"]["northeast"]["lng"]
+            sw_x = p["geometry"]["bounds"]["southwest"]["lat"]
+            sw_y = p["geometry"]["bounds"]["southwest"]["lng"]
+        except:
+            ne_x = p["geometry"]["viewport"]["northeast"]["lat"]
+            ne_y = p["geometry"]["viewport"]["northeast"]["lng"]
+            sw_x = p["geometry"]["viewport"]["southwest"]["lat"]
+            sw_y = p["geometry"]["viewport"]["southwest"]["lng"]
 
-    panToExtent(x_coord, y_coord)#wgs84
+    ZoomToExtent(ne_x, ne_y, sw_x, sw_y)
