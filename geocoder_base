@@ -23,8 +23,7 @@ def panToExtent(lon,lat):
 
 def geocode(address):
     json_cord = requests.get(url + address +"&key="+ api_key) #api call
-    json_data = json_cord.content
-    json_file = json.loads(json_data)
+    json_file = json.loads(json_cord.content)
     
     for p in json_file["results"]:
         x_coord = p["geometry"]["location"]["lat"]
